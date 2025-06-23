@@ -1,35 +1,59 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState } from "react";
+import axios from "axios";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [resumeText, setResumeText] = useState("");
+  const [result, setResult] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const scanResume = async () => {
+    if (!resumeText.trim()) return alert("Please enter resume content.");
+
+    setLoading(true);
+    setResult("");
+
+    try {
+      const res = await axios.post("http://localhost:5000/api/scan", {
+        resumeText,
+      });
+      setResult(res.data.result);
+    } catch (err) {
+      console.error("❌ Error:", err.message);
+      setResult("Error: AI API failed. Check backend.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="container py-4">
+      <h2 className="mb-3 text-center">📄 Resume Scanner with Claude AI</h2>
+
+      <textarea
+        className="form-control mb-3"
+        rows="10"
+        placeholder="Paste your resume text here..."
+        value={resumeText}
+        onChange={(e) => setResumeText(e.target.value)}
+      />
+
+      <button
+        className="btn btn-primary"
+        onClick={scanResume}
+        disabled={loading}
+      >
+        {loading ? "Analyzing..." : "🔍 Analyze Resume"}
+      </button>
+
+      {result && (
+        <div className="mt-4">
+          <h5>🧠 AI Feedback:</h5>
+          <pre className="bg-light p-3 border rounded">{result}</pre>
+        </div>
+      )}
+    </div>
+  );
 }
 
-export default App
+export default App;
