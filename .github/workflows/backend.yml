@@ -1,0 +1,30 @@
+name: 🚀 Backend CI (Docker Build)
+
+on:
+  push:
+    paths:
+      - 'backend/**'
+  pull_request:
+    paths:
+      - 'backend/**'
+
+jobs:
+  backend-ci:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - name: ⬇️ Checkout code
+        uses: actions/checkout@v3
+
+      - name: 🐳 Build Docker image
+        run: docker build -t resume-backend .
+
+      - name: ✅ Verify server entry file
+        run: |
+          if [ ! -f server.js ]; then
+            echo "server.js not found"
+            exit 1
+          fi
