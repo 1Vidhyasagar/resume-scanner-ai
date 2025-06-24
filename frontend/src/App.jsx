@@ -9,7 +9,6 @@ function App() {
 
   const scanResume = async () => {
     if (!resumeText.trim()) return alert("Please enter resume content.");
-
     setLoading(true);
     setResult("");
 
@@ -28,30 +27,39 @@ function App() {
 
   return (
     <div className="container py-4">
-      <h2 className="mb-3 text-center">📄 Resume Scanner with Claude AI</h2>
+      <h2 className="text-center mb-4">📄 Resume Scanner with Claude AI</h2>
 
-      <textarea
-        className="form-control mb-3"
-        rows="10"
-        placeholder="Paste your resume text here..."
-        value={resumeText}
-        onChange={(e) => setResumeText(e.target.value)}
-      />
+      <div className="row justify-content-center">
+        <div className="col-12 col-md-10 col-lg-8">
+          <textarea
+            className="form-control mb-3"
+            rows="10"
+            placeholder="Paste your resume text here..."
+            value={resumeText}
+            onChange={(e) => setResumeText(e.target.value)}
+          />
 
-      <button
-        className="btn btn-primary"
-        onClick={scanResume}
-        disabled={loading}
-      >
-        {loading ? "Analyzing..." : "🔍 Analyze Resume"}
-      </button>
+          <button
+            className="btn btn-primary w-100"
+            onClick={scanResume}
+            disabled={loading}
+          >
+            {loading ? "Analyzing..." : "🔍 Analyze Resume"}
+          </button>
 
-      {result && (
-        <div className="mt-4">
-          <h5>🧠 AI Feedback:</h5>
-          <pre className="bg-light p-3 border rounded">{result}</pre>
+          {result && (
+            <div className="mt-4">
+              <h5>🧠 AI Feedback:</h5>
+              <pre
+                className="bg-light p-3 border rounded"
+                style={{ whiteSpace: "pre-wrap" }}
+              >
+                {result}
+              </pre>
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }
