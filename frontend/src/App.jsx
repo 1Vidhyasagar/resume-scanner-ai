@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { saveAs } from "file-saver";
+import { Document, Packer, Paragraph, TextRun } from "docx";
+import jsPDF from "jspdf";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
@@ -25,12 +28,33 @@ function App() {
     }
   };
 
+  const downloadPDF = () => {
+    const doc = new jsPDF();
+    doc.setFontSize(12);
+    doc.text(result, 10, 20);
+    doc.save("ai-resume-feedback.pdf");
+  };
+
+  const downloadDOCX = async () => {
+    const doc = new Document({
+      sections: [
+        {
+          properties: {},
+          children: [new Paragraph({ children: [new TextRun(result)] })],
+        },
+      ],
+    });
+
+    const blob = await Packer.toBlob(doc);
+    saveAs(blob, "ai-resume-feedback.docx");
+  };
+
   return (
     <div className="container py-4">
-      <h2 className="text-center mb-4">📄 Resume Scanner with Claude AI</h2>
-
       <div className="row justify-content-center">
-        <div className="col-12 col-md-10 col-lg-8">
+        <div className="col-md-10 col-lg-8">
+          <h2 className="mb-4 text-center">📄 Resume Scanner with Claude AI</h2>
+
           <textarea
             className="form-control mb-3"
             rows="10"
@@ -39,23 +63,35 @@ function App() {
             onChange={(e) => setResumeText(e.target.value)}
           />
 
-          <button
-            className="btn btn-primary w-100"
-            onClick={scanResume}
-            disabled={loading}
-          >
-            {loading ? "Analyzing..." : "🔍 Analyze Resume"}
-          </button>
+          <div className="d-grid">
+            <button
+              className="btn btn-primary"
+              onClick={scanResume}
+              disabled={loading}
+            >
+              {loading ? "Analyzing..." : "🔍 Analyze Resume"}
+            </button>
+          </div>
 
           {result && (
             <div className="mt-4">
               <h5>🧠 AI Feedback:</h5>
-              <pre
-                className="bg-light p-3 border rounded"
-                style={{ whiteSpace: "pre-wrap" }}
-              >
-                {result}
-              </pre>
+              <pre className="bg-light p-3 border rounded">{result}</pre>
+
+              <div className="mt-3 d-flex gap-3">
+                <button
+                  className="btn btn-outline-danger"
+                  onClick={downloadPDF}
+                >
+                  ⬇️ Download as PDF
+                </button>
+                <button
+                  className="btn btn-outline-success"
+                  onClick={downloadDOCX}
+                >
+                  ⬇️ Download as Word
+                </button>
+              </div>
             </div>
           )}
         </div>
