@@ -93,7 +93,7 @@ function App() {
   };
 
   return (
-    <div className="container p-2 ">
+    <div className="container p-2 m-4">
     <div></div>
       <h2 className="mb-4 text-center">📄 Resume Scanner with Claude AI</h2>
 
