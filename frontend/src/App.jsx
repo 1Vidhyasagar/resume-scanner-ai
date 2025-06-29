@@ -67,7 +67,7 @@ function App() {
   };
 
   return (
-    <div className="container py-2 vw-100">
+    <div className="container mt-3 vw-100">
       <div className="text-center mb-5">
         <h2 className="fw-bold">📄 Resume Scanner with Claude AI</h2>
         <p className="text-muted">
